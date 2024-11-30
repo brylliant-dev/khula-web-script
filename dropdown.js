@@ -131,4 +131,4 @@ setTimeout(() => {
     selectors: ['.faqs_dropdown.w-dropdown', '[wfu-bind="$user.data.company-name"]'],
     callback: mainFn,
   })
-}, 100)
+}, 500)
