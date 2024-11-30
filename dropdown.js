@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     startObservingElements({
-        selectors: ['.faqs_dropdown.w-dropdown', '[wfu-bind="$user.data.company-name"]', '.dashboardv3-content_main-accordion-layout'],
+        selectors: ['.faqs_dropdown.w-dropdown', '.company-name', '.dashboardv3-content_main-accordion-layout'],
         callback: mainFn,
     })
 })
