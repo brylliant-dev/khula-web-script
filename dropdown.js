@@ -7,6 +7,14 @@ const runFn = (tasks) => {
       "in progress": [],
       incoming: [],
       "completed 2024": [],
+      qa: [],
+    }
+
+    const colorByPrioLvl = {
+        HIGH: '#f6d259',
+        NORMAL: '#8599ff',
+        URGENT: '#e88285',
+        LOW: '#656d7a'
     }
   
     const statusesByTasks = Object.keys(statusList).reduce((acc, curr) => {
@@ -30,9 +38,6 @@ const runFn = (tasks) => {
     const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout')
     const openTicketCount = document.querySelector('#open-ticket-count')
     const awaitingClientFeedbackCount = document.querySelector('#awaiting-client-feedback-count')
-
-    openTicketCount.textContent = statusesByTasks['in progress'].length + statusesByTasks['on going'].length
-    awaitingClientFeedbackCount.textContent = statusesByTasks['awaiting client'].length
   
     Array.from(dropdownList).forEach((ddl) => {
       const titleElem = ddl.querySelector(".faqs_dropdown_heading-layout")
@@ -52,6 +57,7 @@ const runFn = (tasks) => {
 
       if(statusByKey.length === 0){
         const ddlClone = ddl.cloneNode(true)
+        ddlClone.style.cursor = 'auto'
 
         dropdownParent.insertBefore(ddlClone, ddl)
         ddl.remove()
@@ -70,6 +76,7 @@ const runFn = (tasks) => {
           dueDate: td[2],
           assignee: td[3].querySelector(".dashboard-table_cell-label"),
           priority: td[4].querySelector(".dashboard-table_cell-label"),
+          flag: td[4].querySelector('dashboard-table_cell-icon > svg > path')
         }
         const getDateDigit = (date) => {
           if (!date) return "None"
@@ -86,16 +93,22 @@ const runFn = (tasks) => {
         .map(ts => ts.username.split(' ').at(0))
         .join(', ')
 
+        const priorityLvl = (taskStatus.priority?.priority || "low").toUpperCase()
+
         tdData.ticket.textContent = taskStatus.name
         tdData.dateCreated.textContent = getDateDigit(taskStatus.dateCreated)
         tdData.dueDate.textContent = getDateDigit(taskStatus.dueDate)
         tdData.assignee.textContent = assignees !== '' ? assignees : 'None'
-        tdData.priority.textContent = (taskStatus.priority?.priority || "none").toUpperCase()
+        tdData.priority.textContent = priorityLvl
+        tdData.flag.fill = colorByPrioLvl[priorityLvl]
   
         tbody.appendChild(cloneTr)
       }
       tr.remove()
     })
+
+    openTicketCount.textContent = statusesByTasks['in progress'].length + statusesByTasks['on going'].length + statusesByTasks['qa'].length
+    awaitingClientFeedbackCount.textContent = statusesByTasks['awaiting client'].length
   }
   
 
