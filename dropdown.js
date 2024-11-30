@@ -38,6 +38,15 @@ const runFn = (tasks) => {
     const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout')
     const openTicketCount = document.querySelector('#open-ticket-count')
     const awaitingClientFeedbackCount = document.querySelector('#awaiting-client-feedback-count')
+
+    const setTotalCardCount = () => {
+        const openCount = ['on going', 'incoming', 'in progress', 'qa'].reduce((acc, curr) => {
+            return acc + statusesByTasks[curr].length
+        }, 0)
+
+        openTicketCount.textContent = openCount
+        awaitingClientFeedbackCount.textContent = statusesByTasks['awaiting client'].length
+    }
   
     Array.from(dropdownList).forEach((ddl) => {
       const titleElem = ddl.querySelector(".faqs_dropdown_heading-layout")
@@ -107,8 +116,8 @@ const runFn = (tasks) => {
       tr.remove()
     })
 
-    openTicketCount.textContent = statusesByTasks['in progress'].length + statusesByTasks['on going'].length + statusesByTasks['qa'].length
-    awaitingClientFeedbackCount.textContent = statusesByTasks['awaiting client'].length
+    setTotalCardCount()
+
   }
   
 
