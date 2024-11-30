@@ -76,7 +76,7 @@ const runFn = (tasks) => {
           dueDate: td[2],
           assignee: td[3].querySelector(".dashboard-table_cell-label"),
           priority: td[4].querySelector(".dashboard-table_cell-label"),
-          flag: td[4].querySelector('dashboard-table_cell-icon > svg > path')
+          flag: td[4].querySelector('.dashboard-table_cell-icon > svg > path')
         }
         const getDateDigit = (date) => {
           if (!date) return "None"
