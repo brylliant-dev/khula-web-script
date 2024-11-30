@@ -30,9 +30,10 @@ const runFn = (tasks) => {
     const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout')
     const openTicketCount = document.querySelector('#open-ticket-count')
     const awaitingClientFeedbackCount = document.querySelector('#awaiting-client-feedback-count')
+    console.log('statuses by tasks', statusesByTasks)
 
     openTicketCount.textContet = statusesByTasks['in progress'].length + statusesByTasks['on going'].length
-    awaitingClientFeedbackCount.textContent = statusesByTasks['awaiting client'].length
+    awaitingClientFeedbackCount = statusesByTasks['awaiting client'].length
   
     Array.from(dropdownList).forEach((ddl) => {
       const titleElem = ddl.querySelector(".faqs_dropdown_heading-layout")
