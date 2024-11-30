@@ -26,6 +26,13 @@ const runFn = (tasks) => {
       acc[curr] = getSummary
       return acc
     }, {})
+
+    const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout')
+    const openTicketCount = document.querySelector('#open-ticket-count')
+    const awaitingClientFeedbackCount = document.querySelector('#awaiting-client-feedback-count')
+
+    openTicketCount.textContet = statusesByTasks['in progress'].length + statusesByTasks['on going'].length
+    awaitingClientFeedbackCount = statusesByTasks['awaiting client'].length
   
     Array.from(dropdownList).forEach((ddl) => {
       const titleElem = ddl.querySelector(".faqs_dropdown_heading-layout")
@@ -42,6 +49,14 @@ const runFn = (tasks) => {
       }
   
       ticketCountElem.textContent = `${statusByKey.length} Tickets`
+
+      if(statusByKey.length === 0){
+        const ddlClone = dd.cloneNode(true)
+
+        dropdownParent.insertBefore(ddlClone, ddl)
+        ddl.remove()
+        return
+      }
   
       for (let i = 0; i < statusByKey.length; i++) {
         const taskStatus = statusByKey[i]
