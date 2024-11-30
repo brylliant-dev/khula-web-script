@@ -51,7 +51,7 @@ const runFn = (tasks) => {
       ticketCountElem.textContent = `${statusByKey.length} Tickets`
 
       if(statusByKey.length === 0){
-        const ddlClone = dd.cloneNode(true)
+        const ddlClone = ddl.cloneNode(true)
 
         dropdownParent.insertBefore(ddlClone, ddl)
         ddl.remove()
