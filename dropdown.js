@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     const mainFn = async () => {
-        const companyName = document.querySelector('[wfu-bind="$user.data.company-name"]').textContent
+        const companyName = document.querySelector('.company-name').textContent 
 
         const customFields = [{ field_id: '4ad343df-25d9-4ff1-b35d-084099a986e0', operator: '=', value: companyName }]
 
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     startObservingElements({
-        selectors: ['.faqs_dropdown.w-dropdown', '[wfu-bind="$user.data.company-name"]', '.dashboardv3-content_main-accordion-layout'],
+        selectors: ['.faqs_dropdown.w-dropdown', '.company-name', '.dashboardv3-content_main-accordion-layout'],
         callback: mainFn,
     })
 })
