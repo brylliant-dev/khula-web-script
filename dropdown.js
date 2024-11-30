@@ -100,7 +100,7 @@ const runFn = (tasks) => {
         tdData.dueDate.textContent = getDateDigit(taskStatus.dueDate)
         tdData.assignee.textContent = assignees !== '' ? assignees : 'None'
         tdData.priority.textContent = priorityLvl
-        tdData.flag.fill = colorByPrioLvl[priorityLvl]
+        tdData.flag.setAttribute('fill', colorByPrioLvl[priorityLvl]) 
   
         tbody.appendChild(cloneTr)
       }
