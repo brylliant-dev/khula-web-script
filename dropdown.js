@@ -127,6 +127,6 @@ const startObservingElements = ({ selectors, callback }) => {
 
 
   startObservingElements({
-    selectors: [".faqs_dropdown.w-dropdown"],
+    selectors: ['.faqs_dropdown.w-dropdown', '[wfu-bind="$user.data.company-name"]'],
     callback: mainFn,
   })
