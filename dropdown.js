@@ -42,10 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Extract the 'data' object from the decoded JSON
                 const data = decodedJson.data || {};
 
-                // Update the DOM with data object fields
+                // Extract required fields
                 const companyName = data["company-name"] || "No company name available";
                 const currentPlan = data["current-plan"] || "No current plan available";
-                const markupURL = data["markup-link"] || "No markup link available";
+                const markupURL = data["markup-link"] || "";
                 const typeOfService = data["type-of-service"] || "No service type available";
                 const uid = data["uid"] || "No UID available";
                 const websiteUrl = data["website-url"] || "No website URL available";
@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Format and display the current plan
                 const formattedPlan = currentPlan.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-                document.getElementById('txtcurrentplan').innerText = formattedPlan;
+                document.getElementById('txtcurrentplan').innerHTML = formattedPlan;
 
-                // Update the markup link
+                // Update the markup link if available
                 const markupLinkElement = document.getElementById("markupLink");
                 if (markupLinkElement) {
                     markupLinkElement.href = markupURL;
@@ -88,8 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!companyName) throw new Error('Company name not found');
 
-            // API call
-            const url = `https://x8ki-letl-twmt.n7.xano.io/api:c2SUee37/get_user_tasks?companyName=${encodeURIComponent(companyName)}`;
+            // Create custom fields for API query
+            const customFields = [
+                { field_id: "4ad343df-25d9-4ff1-b35d-084099a986e0", operator: "=", value: companyName }
+            ];
+
+            // API call with custom_fields parameter
+            const url = `https://x8ki-letl-twmt.n7.xano.io/api:c2SUee37/get_user_tasks?custom_fields=${encodeURIComponent(JSON.stringify(customFields))}`;
             const response = await fetch(url);
 
             if (!response.ok) throw new Error(`API call failed: ${response.status}`);
