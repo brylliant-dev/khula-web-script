@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const markupLinkElement = document.getElementById("markupLink");
                 if (markupLinkElement) {
                     markupLinkElement.href = markupURL;
-                    markupLinkElement.textContent = markupURL ? "View Markup" : "No markup link available";
                 }
 
                 // Update input fields if they exist
