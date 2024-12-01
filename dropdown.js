@@ -24,6 +24,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Function to show loading overlay
+    function showLoading() {
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.id = 'loading-overlay';
+        loadingOverlay.style.position = 'fixed';
+        loadingOverlay.style.top = '0';
+        loadingOverlay.style.left = '0';
+        loadingOverlay.style.width = '100%';
+        loadingOverlay.style.height = '100%';
+        loadingOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        loadingOverlay.style.zIndex = '1000';
+        loadingOverlay.style.display = 'flex';
+        loadingOverlay.style.justifyContent = 'center';
+        loadingOverlay.style.alignItems = 'center';
+
+        // Add a loading GIF or SVG
+        const loadingImage = document.createElement('img');
+        loadingImage.src = 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c9155286577567832200d_loader.gif'; // Replace with your loading GIF or SVG URL
+        loadingImage.alt = 'Loading...';
+        loadingImage.style.width = '50px';
+        loadingImage.style.height = '50px';
+
+        loadingOverlay.appendChild(loadingImage);
+        document.body.appendChild(loadingOverlay);
+    }
+
+    // Function to hide loading overlay
+    function hideLoading() {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.remove();
+        }
+    }
+
     // Function to decode and update the DOM
     function updateDOM(base64Value) {
         return new Promise((resolve, reject) => {
@@ -187,6 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Main function to fetch data and update elements dynamically
     const mainFn = async (base64Value) => {
         try {
+            showLoading(); // Show loading while processing
             // Decode and update the DOM, and get the company name
             const companyName = await updateDOM(base64Value);
 
@@ -207,6 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
             runFn(tasks);
         } catch (error) {
             console.error('Error in mainFn:', error);
+        } finally {
+            hideLoading(); // Hide loading after processing
         }
     };
 
