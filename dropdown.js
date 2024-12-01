@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const markupLinkElement = document.getElementById("markupLink");
                 if (markupLinkElement) {
                     markupLinkElement.href = markupURL;
+                    markupLinkElement.textContent = markupURL ? "View Markup" : "No markup link available";
                 }
 
                 // Update input fields if they exist
@@ -79,6 +80,110 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Function to handle tasks and update the dropdowns
+    const runFn = (tasks) => {
+        const dropdownList = document.querySelectorAll('.faqs_dropdown.w-dropdown');
+        const statusList = {
+            'awaiting client': [],
+            'on going': [],
+            'in progress': [],
+            incoming: [],
+            'completed 2024': [],
+            qa: [],
+        };
+
+        const colorByPrioLvl = {
+            HIGH: '#f6d259',
+            NORMAL: '#8599ff',
+            URGENT: '#e88285',
+            LOW: '#656d7a',
+        };
+
+        const statusesByTasks = Object.keys(statusList).reduce((acc, curr) => {
+            const filteredTasks = tasks.filter((task) => task.status.status === curr);
+            acc[curr] = filteredTasks.map((t) => ({
+                name: t.name,
+                status: t.status.status,
+                color: t.status.color,
+                assignees: t.assignees,
+                dateCreated: t.date_created,
+                dueDate: t.due_date,
+                priority: t.priority,
+            }));
+            return acc;
+        }, {});
+
+        const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout');
+
+        const setTotalCardCount = () => {
+            const openTicketCount = document.querySelector('#open-ticket-count');
+            const awaitingClientFeedbackCount = document.querySelector('#awaiting-client-feedback-count');
+            const openCount = ['on going', 'incoming', 'in progress', 'qa'].reduce((acc, curr) => acc + statusesByTasks[curr].length, 0);
+
+            openTicketCount.textContent = openCount;
+            awaitingClientFeedbackCount.textContent = statusesByTasks['awaiting client'].length;
+        };
+
+        dropdownList.forEach((ddl) => {
+            const titleElem = ddl.querySelector('.faqs_dropdown_heading-layout');
+            const key = titleElem.textContent.trim().toLowerCase();
+            const statusByKey = statusesByTasks[key];
+
+            const ticketCountElem = ddl.querySelector('.pending-tickets');
+            const tbody = ddl.querySelector('tbody');
+            const tr = tbody.querySelector('tr');
+
+            if (!statusByKey) {
+                tr?.remove();
+                return;
+            }
+
+            ticketCountElem.textContent = `${statusByKey.length} Tickets`;
+
+            if (statusByKey.length === 0) {
+                ddl.querySelector('.w-dropdown-toggle').style.cursor = 'auto';
+                const ddlClone = ddl.cloneNode(true);
+                dropdownParent.insertBefore(ddlClone, ddl);
+                ddl.remove();
+                return;
+            }
+
+            for (const task of statusByKey) {
+                const cloneTr = tr.cloneNode(true);
+                const td = cloneTr.querySelectorAll('td');
+
+                const getDateDigit = (date) => {
+                    if (!date) return 'None';
+                    const parsedUnixDate = parseInt(date);
+                    if (isNaN(parsedUnixDate)) return 'None';
+                    const newDate = new Date(parsedUnixDate).toString().split(' ');
+                    return `${newDate[1]} ${newDate[2]}`;
+                };
+
+                const tdData = {
+                    ticket: td[0],
+                    dateCreated: td[1],
+                    dueDate: td[2],
+                    assignee: td[3].querySelector('.dashboard-table_cell-label'),
+                    priority: td[4].querySelector('.dashboard-table_cell-label'),
+                    flag: td[4].querySelector('.dashboard-table_cell-icon > svg > path'),
+                };
+
+                tdData.ticket.textContent = task.name;
+                tdData.dateCreated.textContent = getDateDigit(task.dateCreated);
+                tdData.dueDate.textContent = getDateDigit(task.dueDate);
+                tdData.assignee.textContent = task.assignees.map((a) => a.username.split(' ')[0]).join(', ') || 'None';
+                tdData.priority.textContent = task.priority?.priority.toUpperCase() || 'LOW';
+                tdData.flag.setAttribute('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
+
+                tbody.appendChild(cloneTr);
+            }
+            tr.remove();
+        });
+
+        setTotalCardCount();
+    };
 
     // Main function to fetch data and update elements dynamically
     const mainFn = async (base64Value) => {
@@ -100,11 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`API call failed: ${response.status}`);
             const tasks = await response.json();
 
-            // Example dynamic updates with tasks
-            console.log("Fetched tasks:", tasks);
-            document.querySelectorAll('.placeholder-class').forEach((el) => {
-                el.innerText = `Tasks for ${companyName}`;
-            });
+            runFn(tasks);
         } catch (error) {
             console.error('Error in mainFn:', error);
         }
