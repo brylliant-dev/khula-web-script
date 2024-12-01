@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingOverlay.style.left = '0';
         loadingOverlay.style.width = '100%';
         loadingOverlay.style.height = '100%';
-        loadingOverlay.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        loadingOverlay.style.backgroundColor = 'rgba(228, 220, 203, 0.9)';
         loadingOverlay.style.zIndex = '1000';
         loadingOverlay.style.display = 'flex';
         loadingOverlay.style.justifyContent = 'center';
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Add a loading GIF or SVG
         const loadingImage = document.createElement('img');
-        loadingImage.src = 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c9155286577567832200d_loader.gif'; // Replace with your loading GIF or SVG URL
+        loadingImage.src = 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c931bab709c1d7379bfbf_loader.gif'; // Replace with your loading GIF or SVG URL
         loadingImage.alt = 'Loading...';
         loadingImage.style.width = '400px';
         loadingImage.style.height = '400px';
