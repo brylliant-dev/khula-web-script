@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const startTime = Date.now();
         const intervalId = setInterval(() => {
             const value = sessionStorage.getItem(key);
-            console.log(`Checking sessionStorage for key "${key}" at ${Date.now() - startTime}ms`);
+            //console.log(`Checking sessionStorage for key "${key}" at ${Date.now() - startTime}ms`);
             if (value) {
                 console.log(`Key "${key}" found in sessionStorage:`, value);
                 clearInterval(intervalId);
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error("Value is not valid Base64");
                 }
                 const decodedJson = JSON.parse(atob(base64Value));
-                console.log("Decoded wfuUser:", decodedJson);
+                //console.log("Decoded wfuUser:", decodedJson);
 
                 // Update the DOM with basic user information
                 document.getElementById("client-name-display").innerText = decodedJson.name || "No name available";
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     input.value = companyName;
                 }
 
-                // Resolve the promise with the company name
+                // Resolve the promise with the uid
                 resolve(companyName);
             } catch (error) {
                 console.error("Failed to decode or parse wfuUser:", error);
