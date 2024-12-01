@@ -224,14 +224,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainFn = async (base64Value) => {
         try {
             showLoading(); // Show loading while processing
-            // Decode and update the DOM, and get the company name
-            const companyName = await updateDOM(base64Value);
+            // Decode and update the DOM, and get the user id
+            const uuid = await updateDOM(base64Value);
 
-            if (!companyName) throw new Error('Company name not found');
+            if (!uuid) throw new Error('Company name not found');
 
             // Create custom fields for API query
             const customFields = [
-                { field_id: "4ad343df-25d9-4ff1-b35d-084099a986e0", operator: "=", value: companyName }
+                { field_id: "4ad343df-25d9-4ff1-b35d-084099a986e0", operator: "=", value: uuid }
             ];
 
             // API call with custom_fields parameter
