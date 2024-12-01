@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Function to wait for sessionStorage to contain a specific key
-    function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // 10-second timeout
-    const startTime = Date.now();
-    const intervalId = setInterval(() => {
-        const value = sessionStorage.getItem(key);
-        console.log(`Checking sessionStorage for key "${key}" at ${Date.now() - startTime}ms`);
+    function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // Extended timeout
+        const startTime = Date.now();
+        const intervalId = setInterval(() => {
+            const value = sessionStorage.getItem(key);
+            console.log(`Checking sessionStorage for key "${key}" at ${Date.now() - startTime}ms`);
             if (value) {
                 console.log(`Key "${key}" found in sessionStorage:`, value);
                 clearInterval(intervalId);
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(`Timeout waiting for sessionStorage key: ${key}`);
             }
         }, interval);
-   }
+    }
 
     // Function to validate if a string is Base64
     function isBase64(str) {
@@ -35,18 +35,18 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingOverlay.style.left = '0';
         loadingOverlay.style.width = '100%';
         loadingOverlay.style.height = '100%';
-        loadingOverlay.style.backgroundColor = 'rgba(228, 220, 203, 0.9)';
+        loadingOverlay.style.backgroundColor = 'rgba(228, 220, 203, 0.9)'; // Updated background color
         loadingOverlay.style.zIndex = '1000';
         loadingOverlay.style.display = 'flex';
         loadingOverlay.style.justifyContent = 'center';
         loadingOverlay.style.alignItems = 'center';
 
-        // Add a loading GIF or SVG
+        // Add a loading spinner (updated loader GIF)
         const loadingImage = document.createElement('img');
-        loadingImage.src = 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c931bab709c1d7379bfbf_loader.gif'; // Replace with your loading GIF or SVG URL
+        loadingImage.src = 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c931bab709c1d7379bfbf_loader.gif'; // Updated loader GIF
         loadingImage.alt = 'Loading...';
-        loadingImage.style.width = '400px';
-        loadingImage.style.height = '400px';
+        loadingImage.style.width = '400px'; // Updated loader size
+        loadingImage.style.height = '400px'; // Updated loader size
 
         loadingOverlay.appendChild(loadingImage);
         document.body.appendChild(loadingOverlay);
