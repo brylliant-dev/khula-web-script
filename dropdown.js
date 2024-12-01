@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadingImage = document.createElement('img');
         loadingImage.src = 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c9155286577567832200d_loader.gif'; // Replace with your loading GIF or SVG URL
         loadingImage.alt = 'Loading...';
-        loadingImage.style.width = '50px';
-        loadingImage.style.height = '50px';
+        loadingImage.style.width = '400px';
+        loadingImage.style.height = '400px';
 
         loadingOverlay.appendChild(loadingImage);
         document.body.appendChild(loadingOverlay);
