@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Function to wait for sessionStorage to contain a specific key
-    function waitForSessionStorage(key, callback, interval = 100, timeout = 5000) {
-        const startTime = Date.now();
-        const intervalId = setInterval(() => {
-            const value = sessionStorage.getItem(key);
+    function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // 10-second timeout
+    const startTime = Date.now();
+    const intervalId = setInterval(() => {
+        const value = sessionStorage.getItem(key);
+        console.log(`Checking sessionStorage for key "${key}" at ${Date.now() - startTime}ms`);
             if (value) {
+                console.log(`Key "${key}" found in sessionStorage:`, value);
                 clearInterval(intervalId);
                 callback(value);
             }
@@ -13,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(`Timeout waiting for sessionStorage key: ${key}`);
             }
         }, interval);
-    }
+   }
 
     // Function to validate if a string is Base64
     function isBase64(str) {
