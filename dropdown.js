@@ -1,4 +1,55 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Function to wait for sessionStorage to contain a specific key
+    function waitForSessionStorage(key, callback) {
+        const interval = setInterval(() => {
+            if (sessionStorage.getItem(key)) {
+                clearInterval(interval); // Stop checking when the data is found
+                callback(); // Call the function to process the data
+            }
+        }, 100); // Check every 100ms
+    }
+
+    // Function to update the DOM with decoded sessionStorage data
+    function updateDOM() {
+        return new Promise((resolve, reject) => {
+            const base64Value = sessionStorage.getItem('wfuUser');
+            try {
+                // Decode and parse the Base64 string
+                const decodedJson = JSON.parse(atob(base64Value));
+                console.log("Decoded wfuUser:", decodedJson);
+
+                // Update the DOM with the user's basic information
+                document.getElementById("client-name-display").innerText = decodedJson.name || "No name available";
+                document.getElementById("txt-username").innerText = decodedJson.name || "No name available";
+                document.getElementById("client-email-display").innerText = decodedJson.email || "No email available";
+
+                // Access the 'data' object
+                const data = decodedJson.data || {};
+                const companyName = data["company-name"] || "No company name available";
+                const uid = data["uid"] || "No UID available";
+                const websiteUrl = data["website-url"] || "No website URL available";
+
+                // Update DOM elements with extracted data
+                document.getElementById("txt-company").innerText = companyName;
+                document.getElementById("txt-userid").innerText = uid;
+                document.getElementById("txt-website").innerText = websiteUrl;
+
+                // Set company name in an input field
+                const input = document.getElementById("company-input-data");
+                if (input) {
+                    input.value = companyName;
+                }
+
+                // Resolve the promise with the company name
+                resolve(companyName);
+            } catch (error) {
+                console.error("Failed to decode or parse wfuUser:", error);
+                reject(error);
+            }
+        });
+    }
+
+    // Function to handle tasks and update the dropdowns
     const runFn = (tasks) => {
         const dropdownList = document.querySelectorAll('.faqs_dropdown.w-dropdown');
         const statusList = {
@@ -102,9 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setTotalCardCount();
     };
 
+    // Function to fetch tasks and run the dropdown updates
     const mainFn = async () => {
         try {
-            const companyName = document.querySelector('[wfu-bind="$user.data.company-name"]').textContent;
+            // Wait for updateDOM to finish and retrieve the company name
+            const companyName = await updateDOM();
+
             if (!companyName) throw new Error('Company name not found');
 
             const customFields = [{ field_id: '4ad343df-25d9-4ff1-b35d-084099a986e0', operator: '=', value: companyName }];
@@ -119,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Function to observe elements on the DOM
     const startObservingElements = ({ selectors, callback }) => {
         const observer = new MutationObserver((_mutations, obs) => {
             const foundSelectors = selectors.filter((selector) => document.querySelector(selector));
@@ -134,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Start observing and execute mainFn once elements are available
     startObservingElements({
         selectors: ['.faqs_dropdown.w-dropdown', '[wfu-bind="$user.data.company-name"]', '.dashboardv3-content_main-accordion-layout'],
         callback: mainFn,
