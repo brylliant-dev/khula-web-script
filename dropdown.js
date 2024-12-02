@@ -124,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
             'on going': [],
             'in progress': [],
             incoming: [],
-            'completed 2024': [],
             qa: [],
         };
 
