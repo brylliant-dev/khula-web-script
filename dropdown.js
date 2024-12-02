@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 dateCreated: t.date_created,
                 dueDate: t.due_date,
                 priority: t.priority,
+                popupBody: t.description
             }));
             return acc;
         }, {});
@@ -210,6 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 tdData.assignee.textContent = task.assignees.map((a) => a.username.split(' ')[0]).join(', ') || 'None';
                 tdData.priority.textContent = task.priority?.priority.toUpperCase() || 'LOW';
                 tdData.flag.setAttribute('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
+
+                td.addEventListener('click', () => {
+                       document.querySelector('[data-w-id="7cb62205-68cb-1347-2350-4b68da126cd4"]').click()
+                })
 
                 tbody.appendChild(cloneTr);
             }
