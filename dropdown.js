@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     // Function to wait for sessionStorage to contain a specific key
     function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // Extended timeout
@@ -161,6 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const colorTicketData = document.querySelector('#color-ticket-data')
         const taskTitleTicket = document.querySelector('#task-title-ticket-data')
         const companyTicketData = document.querySelector('#company-ticket-data')
+        const viewAwaitingClientBtn = document.querySelector('#view-awaiting-client')
+        let awaitingClientDropdown = null
 
 
         const setTotalCardCount = () => {
@@ -194,6 +195,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 dropdownParent.insertBefore(ddlClone, ddl);
                 ddl.remove();
                 return;
+            }
+
+            if(titleElem.textContent.trim().toLowerCase() === 'awaiting client'){
+                awaitingClientDropdown = ddl
+                if(awaitingClientDropdown){
+                    viewAwaitingClientBtn.addEventListener('click', () => {
+                        awaitingClientDropdown.click()
+                    })
+                }
             }
 
             for (const task of statusByKey) {
