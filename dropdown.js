@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Function to wait for sessionStorage to contain a specific key
-    document.addEventListener('DOMContentLoaded', () => {
-    // Function to wait for sessionStorage to contain a specific key
     function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // Extended timeout
         const startTime = Date.now();
         const intervalId = setInterval(() => {
@@ -162,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const colorTicketData = document.querySelector('#color-ticket-data')
         const taskTitleTicket = document.querySelector('#task-title-ticket-data')
         const companyTicketData = document.querySelector('#company-ticket-data')
-        let awaitingClientDropdown = null
 
 
         const setTotalCardCount = () => {
@@ -277,8 +274,5 @@ document.addEventListener('DOMContentLoaded', () => {
     waitForSessionStorage("wfuUser", (value) => {
         mainFn(value);
     });
-
-});
-
 
 });
