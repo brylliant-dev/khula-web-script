@@ -150,6 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, {});
 
         const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout');
+        const popupBtn = document.querySelector('[data-w-id="7cb62205-68cb-1347-2350-4b68da126cd4"]')
+        const popupDesc = document.querySelector('#descriptiion-ticket-data')
 
         const setTotalCardCount = () => {
             const openTicketCount = document.querySelector('#open-ticket-count');
@@ -211,9 +213,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 tdData.assignee.textContent = task.assignees.map((a) => a.username.split(' ')[0]).join(', ') || 'None';
                 tdData.priority.textContent = task.priority?.priority.toUpperCase() || 'LOW';
                 tdData.flag.setAttribute('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
-
+                
                 cloneTr.addEventListener('click', () => {
-                       document.querySelector('[data-w-id="7cb62205-68cb-1347-2350-4b68da126cd4"]').click()
+                       popupBtn.click()
+                       popupDesc.textContent = task.description
                 })
 
                 tbody.appendChild(cloneTr);
