@@ -151,8 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout');
         const popupBtn = document.querySelector('[data-w-id="7cb62205-68cb-1347-2350-4b68da126cd4"]')
-        const popupDesc = document.querySelector('#descriptiion-ticket-data')
-        const popupCloseBtn = document.querySelector('#dashboard-popup-close')
+        const popupDesc = document.querySelector('#description-text-data')
 
         const setTotalCardCount = () => {
             const openTicketCount = document.querySelector('#open-ticket-count');
