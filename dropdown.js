@@ -216,7 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 cloneTr.addEventListener('click', () => {
                        popupBtn.click()
-                       popupDesc.textContent = task.description
+                       setTimeout(() => {
+                        popupDesc.textContent = task.description
+                       }, 100)
                 })
 
                 tbody.appendChild(cloneTr);
