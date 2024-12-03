@@ -1,12 +1,11 @@
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function () {
     // Function to wait for sessionStorage to contain a specific key
     function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // Extended timeout
         const startTime = Date.now();
         const intervalId = setInterval(() => {
             const value = sessionStorage.getItem(key);
-            //console.log(`Checking sessionStorage for key "${key}" at ${Date.now() - startTime}ms`);
             if (value) {
-                //console.log(`Key "${key}" found in sessionStorage:`, value);
+                console.log(`Key "${key}" found in sessionStorage:`, value);
                 clearInterval(intervalId);
                 callback(value);
             }
@@ -28,36 +27,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to show loading overlay
     function showLoading() {
-        const loadingOverlay = document.createElement('div');
-        loadingOverlay.id = 'loading-overlay';
-        loadingOverlay.style.position = 'fixed';
-        loadingOverlay.style.top = '0';
-        loadingOverlay.style.left = '0';
-        loadingOverlay.style.width = '100%';
-        loadingOverlay.style.height = '100%';
-        loadingOverlay.style.backgroundColor = 'rgba(228, 220, 203, 0.9)'; // Updated background color
-        loadingOverlay.style.zIndex = '1000';
-        loadingOverlay.style.display = 'flex';
-        loadingOverlay.style.justifyContent = 'center';
-        loadingOverlay.style.alignItems = 'center';
+        const loadingOverlay = $('<div>', {
+            id: 'loading-overlay',
+            css: {
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(228, 220, 203, 0.9)',
+                zIndex: '1000',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }
+        });
 
-        // Add a loading spinner (updated loader GIF)
-        const loadingImage = document.createElement('img');
-        loadingImage.src = 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c931bab709c1d7379bfbf_loader.gif'; // Updated loader GIF
-        loadingImage.alt = 'Loading...';
-        loadingImage.style.width = '400px'; // Updated loader size
-        loadingImage.style.height = '400px'; // Updated loader size
+        const loadingImage = $('<img>', {
+            src: 'https://cdn.prod.website-files.com/631172823157c44677d71f1d/674c931bab709c1d7379bfbf_loader.gif',
+            alt: 'Loading...',
+            css: {
+                width: '400px',
+                height: '400px'
+            }
+        });
 
-        loadingOverlay.appendChild(loadingImage);
-        document.body.appendChild(loadingOverlay);
+        loadingOverlay.append(loadingImage).appendTo('body');
     }
 
     // Function to hide loading overlay
     function hideLoading() {
-        const loadingOverlay = document.getElementById('loading-overlay');
-        if (loadingOverlay) {
-            loadingOverlay.remove();
-        }
+        $('#loading-overlay').remove();
     }
 
     // Function to decode and update the DOM
@@ -68,49 +68,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error("Value is not valid Base64");
                 }
                 const decodedJson = JSON.parse(atob(base64Value));
-                console.log(decodedJson); 
-                // Update the DOM with basic user information
-                document.getElementById("client-name-display").innerText = decodedJson.name || "No name available";
-                document.getElementById("txt-username").innerText = decodedJson.name || "No name available";
-                document.getElementById("client-email-display").innerText = decodedJson.email || "No email available";
+                console.log(decodedJson);
 
-                // Extract the 'data' object from the decoded JSON
+                $("#client-name-display").text(decodedJson.name || "No name available");
+                $("#txt-username").text(decodedJson.name || "No name available");
+                $("#client-email-display").text(decodedJson.email || "No email available");
+
                 const data = decodedJson.data || {};
-
-                // Extract required fields
                 const companyName = data["company-name"] || "No company name available";
                 const currentPlan = data["current-plan"] || "No current plan available";
                 const markupURL = data["markup-link"] || "";
                 const typeOfService = data["type-of-service"] || "No service type available";
                 const uid = data["uid"] || "No UID available";
-                //const websiteUrl = data["website-url"] || "No website URL available";
 
-                // Update DOM elements with extracted data
-                document.getElementById("txt-company").innerText = companyName;
-                document.getElementById("txt-userid").innerText = uid;
-                //document.getElementById("txt-website").innerText = websiteUrl;
+                $("#txt-company").text(companyName);
+                $("#txt-userid").text(uid);
 
-                // Format and display the current plan
                 const formattedPlan = currentPlan.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-                document.getElementById('txtcurrentplan').innerHTML = formattedPlan;
-                document.getElementById('txtusercurrentplan').innerHTML = formattedPlan;
-                
+                $('#txtcurrentplan').html(formattedPlan);
+                $('#txtusercurrentplan').html(formattedPlan);
 
-                // Update the markup link if available
-                const markupLinkElement = document.getElementById("markupLink");
-                 const markupLinkElementQA = document.getElementById("markupLinkQA");
-                if (markupLinkElement && markupLinkElementQA) {
-                    markupLinkElement.href = markupURL;
-                    markupLinkElementQA.href = markupURL;
+                const markupLinkElement = $("#markupLink");
+                const markupLinkElementQA = $("#markupLinkQA");
+                if (markupLinkElement.length && markupLinkElementQA.length) {
+                    markupLinkElement.attr('href', markupURL);
+                    markupLinkElementQA.attr('href', markupURL);
                 }
 
-                // Update input fields if they exist
-                const input = document.getElementById("company-input-data");
-                if (input) {
-                    input.value = companyName;
+                const input = $("#company-input-data");
+                if (input.length) {
+                    input.val(companyName);
                 }
 
-                // Resolve the promise with the uid
                 resolve(companyName);
             } catch (error) {
                 console.error("Failed to decode or parse wfuUser:", error);
@@ -121,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to handle tasks and update the dropdowns
     const runFn = ({ tasks, uuid }) => {
-        const dropdownList = document.querySelectorAll('.faqs_dropdown.w-dropdown');
+        const dropdownList = $('.faqs_dropdown.w-dropdown');
         const statusList = {
             'awaiting client': [],
             'on going': [],
@@ -138,17 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         function formatTextForHTML(input) {
-              const urlPattern = /https?:\/\/[^\s]+/g;
-            
-              // Replace detected URLs with clickable links
-                const formattedString = input.replace(urlPattern, (url) => {
-                  return `<a href="${url}" style="color: blue; text-decoration: underline;" target="_blank">${url}</a>`;
-                });
-
-
-            return formattedString
-                .replace(/\n/g, '<br>') // Replace newlines with <br>
-                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Replace tabs with 4 spaces
+            const urlPattern = /https?:\/\/[^\s]+/g;
+            return input.replace(urlPattern, (url) => `<a href="${url}" style="color: blue; text-decoration: underline;" target="_blank">${url}</a>`)
+                .replace(/\n/g, '<br>')
+                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
         }
 
         const statusesByTasks = Object.keys(statusList).reduce((acc, curr) => {
@@ -166,50 +148,48 @@ document.addEventListener('DOMContentLoaded', () => {
             return acc;
         }, {});
 
-        const dropdownParent = document.querySelector('.dashboardv3-content_main-accordion-layout');
-        const popupBtn = document.querySelector('[data-w-id="7cb62205-68cb-1347-2350-4b68da126cd4"]')
-        const popupDesc = document.querySelector('#description-text-data')
-        const colorTicketData = document.querySelector('#color-ticket-data')
-        const taskTitleTicket = document.querySelector('#task-title-ticket-data')
-        const companyTicketData = document.querySelector('#company-ticket-data')
-
+        const dropdownParent = $('.dashboardv3-content_main-accordion-layout');
+        const popupBtn = $('#ticket-popup-button');
+        const popupDesc = $('#description-text-data');
+        const colorTicketData = $('#color-ticket-data');
+        const taskTitleTicket = $('#task-title-ticket-data');
+        const companyTicketData = $('#company-ticket-data');
 
         const setTotalCardCount = () => {
-            const openTicketCount = document.querySelector('#open-ticket-count');
-            const awaitingClientFeedbackCount = document.querySelector('#awaiting-client-feedback-count');
+            const openTicketCount = $('#open-ticket-count');
+            const awaitingClientFeedbackCount = $('#awaiting-client-feedback-count');
             const openCount = ['on going', 'incoming', 'in progress', 'qa'].reduce((acc, curr) => acc + statusesByTasks[curr].length, 0);
 
-            openTicketCount.textContent = openCount;
-            awaitingClientFeedbackCount.textContent = statusesByTasks['awaiting client'].length;
+            openTicketCount.text(openCount);
+            awaitingClientFeedbackCount.text(statusesByTasks['awaiting client'].length);
         };
 
-        dropdownList.forEach((ddl) => {
-            const titleElem = ddl.querySelector('.faqs_dropdown_heading-layout');
-            const key = titleElem.textContent.trim().toLowerCase();
+        dropdownList.each(function () {
+            const ddl = $(this);
+            const titleElem = ddl.find('.faqs_dropdown_heading-layout');
+            const key = titleElem.text().trim().toLowerCase();
             const statusByKey = statusesByTasks[key];
 
-            const ticketCountElem = ddl.querySelector('.pending-tickets');
-            const tbody = ddl.querySelector('tbody');
-            const tr = tbody.querySelector('tr');
+            const ticketCountElem = ddl.find('.pending-tickets');
+            const tbody = ddl.find('tbody');
+            const tr = tbody.find('tr').first();
 
             if (!statusByKey) {
-                tr?.remove();
+                tr.remove();
                 return;
             }
 
-            ticketCountElem.textContent = `${statusByKey.length} Tickets`;
+            ticketCountElem.text(`${statusByKey.length} Tickets`);
 
             if (statusByKey.length === 0) {
-                ddl.querySelector('.w-dropdown-toggle').style.cursor = 'auto';
-                const ddlClone = ddl.cloneNode(true);
-                dropdownParent.insertBefore(ddlClone, ddl);
-                ddl.remove();
+                ddl.find('.w-dropdown-toggle').css('cursor', 'auto');
+                ddl.clone().insertBefore(ddl).remove();
                 return;
             }
 
             for (const task of statusByKey) {
-                const cloneTr = tr.cloneNode(true);
-                const td = cloneTr.querySelectorAll('td');
+                const cloneTr = tr.clone();
+                const td = cloneTr.find('td');
 
                 const getDateDigit = (date) => {
                     if (!date) return 'None';
@@ -220,32 +200,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 const tdData = {
-                    ticket: td[0],
-                    dateCreated: td[1],
-                    dueDate: td[2],
-                    assignee: td[3].querySelector('.dashboard-table_cell-label'),
-                    priority: td[4].querySelector('.dashboard-table_cell-label'),
-                    flag: td[4].querySelector('.dashboard-table_cell-icon > svg > path'),
+                    ticket: td.eq(0),
+                    dateCreated: td.eq(1),
+                    dueDate: td.eq(2),
+                    assignee: td.eq(3).find('.dashboard-table_cell-label'),
+                    priority: td.eq(4).find('.dashboard-table_cell-label'),
+                    flag: td.eq(4).find('.dashboard-table_cell-icon > svg > path'),
                 };
 
-                tdData.ticket.textContent = task.name;
-                tdData.dateCreated.textContent = getDateDigit(task.dateCreated);
-                tdData.dueDate.textContent = getDateDigit(task.dueDate);
-                tdData.assignee.textContent = task.assignees.map((a) => a.username.split(' ')[0]).join(', ') || 'None';
-                tdData.priority.textContent = task.priority?.priority.toUpperCase() || 'LOW';
-                tdData.flag.setAttribute('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
+                tdData.ticket.text(task.name);
+                tdData.dateCreated.text(getDateDigit(task.dateCreated));
+                tdData.dueDate.text(getDateDigit(task.dueDate));
+                tdData.assignee.text(task.assignees.map((a) => a.username.split(' ')[0]).join(', ') || 'None');
+                tdData.priority.text(task.priority?.priority.toUpperCase() || 'LOW');
+                tdData.flag.attr('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
 
-                cloneTr.addEventListener('click', () => {
-                    const desc = task.popupBody
-                    popupBtn.click()
-                    popupDesc.textContent = ''
-                    popupDesc.innerHTML = desc && desc !== '' ? formatTextForHTML(task.popupBody) : 'None'
-                    colorTicketData.style.backgroundColor = task.color
-                    taskTitleTicket.textContent = task.name
-                    companyTicketData.textContent = uuid
-                })
+                cloneTr.on('click', function () {
+                    popupBtn.click();
+                    popupDesc.html(formatTextForHTML(task.popupBody || 'None'));
+                    colorTicketData.css('background-color', task.color);
+                    taskTitleTicket.text(task.name);
+                    companyTicketData.text(uuid);
+                });
 
-                tbody.appendChild(cloneTr);
+                tbody.append(cloneTr);
             }
             tr.remove();
         });
@@ -256,18 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Main function to fetch data and update elements dynamically
     const mainFn = async (base64Value) => {
         try {
-            showLoading(); // Show loading while processing
-            // Decode and update the DOM, and get the user id
+            showLoading();
             const uuid = await updateDOM(base64Value);
 
             if (!uuid) throw new Error('Company name not found');
 
-            // Create custom fields for API query
             const customFields = [
                 { field_id: "4ad343df-25d9-4ff1-b35d-084099a986e0", operator: "=", value: uuid }
             ];
 
-            // API call with custom_fields parameter
             const url = `https://x8ki-letl-twmt.n7.xano.io/api:c2SUee37/get_user_tasks?custom_fields=${encodeURIComponent(JSON.stringify(customFields))}`;
             const response = await fetch(url);
 
@@ -278,13 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error in mainFn:', error);
         } finally {
-            hideLoading(); // Hide loading after processing
+            hideLoading();
         }
     };
 
-    // Wait for the 'wfuUser' key in sessionStorage and then proceed
     waitForSessionStorage("wfuUser", (value) => {
         mainFn(value);
     });
-
 });
