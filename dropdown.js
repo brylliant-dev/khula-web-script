@@ -249,8 +249,7 @@ $(document).ready(function () {
 
             if (statusByKey.length === 0) {
                 ddl.find('.w-dropdown-toggle').css('cursor', 'auto');
-                ddl.find('nav').css('display', 'none');
-                console.log('nav', ddl.find('nav'))
+                ddl.find('nav').remove();
 
                 return;
             }
