@@ -137,9 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
               const urlPattern = /https?:\/\/[^\s]+/g;
             
               // Replace detected URLs with clickable links
-              const formattedString = input.replace(urlPattern, (url) => {
-                return `<a href="${url}" target="_blank">${url}</a>`;
-              });
+                const formattedString = input.replace(urlPattern, (url) => {
+                  return `<a href="${url}" style="color: blue; text-decoration: underline;" target="_blank">${url}</a>`;
+                });
+
 
             return formattedString
                 .replace(/\n/g, '<br>') // Replace newlines with <br>
