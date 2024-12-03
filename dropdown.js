@@ -151,20 +151,22 @@ $(document).ready(function () {
         // Assuming 'statusesByTasks' is already defined
         function getTaskDetailsByTitle(titleText) {
             // Flatten all tasks into a single array using Object.values
-            const allTasks = Object.values(statusesByTasks).flat();
+            for (const statusKey in statusesByTasks) {
+                if (statusesByTasks.hasOwnProperty(statusKey)) {
+                    // Get the list of tasks under the current status
+                    const tasks = statusesByTasks[statusKey];
         
-            // Find the task where the name includes the given titleText
-            const task = allTasks.find(task => task.name.includes(titleText));
-        
-            if (task) {
-                return {
-                    description: task.popupBody,
-                    color: task.color
-                };
-            }
-        
-            // Return null if no matching task is found
-            return null;
+                    // Find the task with the given titleText
+                    for (const task of tasks) {
+                        if (task.name === titleText) {
+                            // Return the description and color of the task if found
+                            return {
+                                description: task.popupBody,
+                                color: task.color
+                            };
+                        }
+                    }
+                }
         }
 
 
