@@ -285,7 +285,7 @@ $(document).ready(function () {
             showLoading();
             const uuid = await updateDOM(base64Value);
 
-            if (!uuid) throw new Error('Company name not found');
+            if (!uuid) throw new Error('User not found');
 
             const customFields = [
                 { field_id: "4ad343df-25d9-4ff1-b35d-084099a986e0", operator: "=", value: uuid }
