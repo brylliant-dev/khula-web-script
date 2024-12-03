@@ -148,12 +148,79 @@ $(document).ready(function () {
             return acc;
         }, {});
 
+        // Assuming 'statusesByTasks' is already defined
+        function getTaskDetailsByTitle(titleText) {
+            // Loop through each status in statusesByTasks
+            for (const statusKey in statusesByTasks) {
+                if (statusesByTasks.hasOwnProperty(statusKey)) {
+                    // Get the list of tasks under the current status
+                    const tasks = statusesByTasks[statusKey];
+        
+                    // Find the task with the given titleText
+                    for (const task of tasks) {
+                        if (task.name === titleText) {
+                            // Return the description and color of the task if found
+                            return {
+                                description: task.popupBody,
+                                color: task.color
+                            };
+                        }
+                    }
+                }
+            }
+        
+            // Return null if no matching task is found
+            return null;
+        }
+
         const dropdownParent = $('.dashboardv3-content_main-accordion-layout');
         const popupBtn = $('#ticket-popup-button');
         const popupDesc = $('#description-text-data');
         const colorTicketData = $('#color-ticket-data');
         const taskTitleTicket = $('#task-title-ticket-data');
         const companyTicketData = $('#company-ticket-data');
+
+        // Use event delegation to handle click event on dynamically added rows
+        $(document).on('click', '.dashboardv3-table_row', function(event) {
+            // Get the clicked row
+            const row = $(this);
+        
+            // Find the element with class 'dashboard-table_cell title' inside the clicked row
+            const titleElement = row.find('.dashboard-table_cell.title');
+        
+            // Get the text content of the title element
+            const titleText = titleElement.text().trim();
+        
+            // Log the title text to the console
+            console.log('Row Title:', titleText);
+
+            const taskDetails = getTaskDetailsByTitle(titleText);
+            if (taskDetails) {
+                console.log('Description:', taskDetails.description);
+                console.log('Color:', taskDetails.color);
+            } else {
+                console.log('Task not found.');
+            }
+
+            popupDesc.html(formatTextForHTML(taskDetails.description || 'None'));
+            colorTicketData.css('background-color', taskDetails.color);
+            taskTitleTicket.text(titleText);
+            companyTicketData.text($("#txt-company").text());
+            
+        
+            // Display the pop-up with class 'pop-out-ticket' as flex and set opacity to 1
+            $('.pop-out-ticket').css({
+                'display': 'flex',
+                'opacity': '1'
+            });
+        
+            // Set the opacity of the element with class 'pop-out-wrapper-ticket' to 1
+            $('.pop-out-wrapper-ticket').css({
+                'opacity': '1'
+            });
+        });
+
+        
 
         const setTotalCardCount = () => {
             const openTicketCount = $('#open-ticket-count');
@@ -187,34 +254,6 @@ $(document).ready(function () {
                 return;
             }
 
-            // Use event delegation to handle click event on dynamically added rows
-            $(document).on('click', '.dashboardv3-table_row', function(event) {
-                // Get the clicked row
-                const row = $(this);
-            
-                // Find the element with class 'dashboard-table_cell title' inside the clicked row
-                const titleElement = row.find('.dashboard-table_cell.title');
-            
-                // Get the text content of the title element
-                const titleText = titleElement.text().trim();
-            
-                // Log the title text to the console
-                console.log('Row Title:', titleText);
-            
-                // Display the pop-up with class 'pop-out-ticket' as flex and set opacity to 1
-                $('.pop-out-ticket').css({
-                    'display': 'flex',
-                    'opacity': '1'
-                });
-            
-                // Set the opacity of the element with class 'pop-out-wrapper-ticket' to 1
-                $('.pop-out-wrapper-ticket').css({
-                    'opacity': '1'
-                });
-            });
-
-
-
 
             for (const task of statusByKey) {
                 const cloneTr = tr.clone();
@@ -244,13 +283,14 @@ $(document).ready(function () {
                 tdData.priority.text(task.priority?.priority.toUpperCase() || 'LOW');
                 tdData.flag.attr('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
 
+                /*
                 cloneTr.on('click', function () {
                     //popupBtn.click();
                     popupDesc.html(formatTextForHTML(task.popupBody || 'None'));
                     colorTicketData.css('background-color', task.color);
                     taskTitleTicket.text(task.name);
                     companyTicketData.text(uuid);
-                });
+                });*/
 
                 tbody.append(cloneTr);
             }
