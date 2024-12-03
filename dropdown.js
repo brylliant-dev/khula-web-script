@@ -150,12 +150,12 @@ $(document).ready(function () {
 
         // Assuming 'statusesByTasks' is already defined
         function getTaskDetailsByTitle(titleText) {
-            // Flatten all tasks into a single array using Object.values
+            // Loop through each status in statusesByTasks
             for (const statusKey in statusesByTasks) {
                 if (statusesByTasks.hasOwnProperty(statusKey)) {
                     // Get the list of tasks under the current status
                     const tasks = statusesByTasks[statusKey];
-        
+
                     // Find the task with the given titleText
                     for (const task of tasks) {
                         if (task.name === titleText) {
@@ -167,8 +167,11 @@ $(document).ready(function () {
                         }
                     }
                 }
-        }
+            }
 
+            // Return null if no matching task is found
+            return null;
+        }
 
         const dropdownParent = $('.dashboardv3-content_main-accordion-layout');
         const popupBtn = $('#ticket-popup-button');
@@ -178,16 +181,16 @@ $(document).ready(function () {
         const companyTicketData = $('#company-ticket-data');
 
         // Use event delegation to handle click event on dynamically added rows
-        $(document).on('click', '.dashboardv3-table_row', (event) => {
+        $(document).on('click', '.dashboardv3-table_row', function(event) {
             // Get the clicked row
             const row = $(this);
-        
+
             // Find the element with class 'dashboard-table_cell title' inside the clicked row
             const titleElement = row.find('.dashboard-table_cell.title');
-        
+
             // Get the text content of the title element
             const titleText = titleElement.text().trim();
-        
+
             // Log the title text to the console
             console.log('Row Title:', titleText);
 
@@ -203,20 +206,20 @@ $(document).ready(function () {
             colorTicketData.css('background-color', taskDetails.color);
             taskTitleTicket.text(titleText);
             companyTicketData.text($("#txt-company").text());
-            
-        
+
+
             // Display the pop-up with class 'pop-out-ticket' as flex and set opacity to 1
             $('.pop-out-ticket').css({
                 'display': 'flex',
                 'opacity': '1'
             });
-        
+
             // Set the opacity of the element with class 'pop-out-wrapper-ticket' to 1
             $('.pop-out-wrapper-ticket').css({
                 'opacity': '1'
             });
         });
-        
+
         const setTotalCardCount = () => {
             const openTicketCount = $('#open-ticket-count');
             const awaitingClientFeedbackCount = $('#awaiting-client-feedback-count');
