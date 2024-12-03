@@ -216,7 +216,8 @@ $(document).ready(function () {
 
             // Set the opacity of the element with class 'pop-out-wrapper-ticket' to 1
             $('.pop-out-wrapper-ticket').css({
-                'opacity': '1'
+                'opacity': '1',
+                'transform': 'translateY(0em)'
             });
         });
 
