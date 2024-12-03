@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const value = sessionStorage.getItem(key);
             //console.log(`Checking sessionStorage for key "${key}" at ${Date.now() - startTime}ms`);
             if (value) {
-                console.log(`Key "${key}" found in sessionStorage:`, value);
+                //console.log(`Key "${key}" found in sessionStorage:`, value);
                 clearInterval(intervalId);
                 callback(value);
             }
