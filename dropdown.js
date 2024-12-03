@@ -150,28 +150,23 @@ $(document).ready(function () {
 
         // Assuming 'statusesByTasks' is already defined
         function getTaskDetailsByTitle(titleText) {
-            // Loop through each status in statusesByTasks
-            for (const statusKey in statusesByTasks) {
-                if (statusesByTasks.hasOwnProperty(statusKey)) {
-                    // Get the list of tasks under the current status
-                    const tasks = statusesByTasks[statusKey];
+            // Flatten all tasks into a single array using Object.values
+            const allTasks = Object.values(statusesByTasks).flat();
         
-                    // Find the task with the given titleText
-                    for (const task of tasks) {
-                        if (task.name === titleText) {
-                            // Return the description and color of the task if found
-                            return {
-                                description: task.popupBody,
-                                color: task.color
-                            };
-                        }
-                    }
-                }
+            // Find the task where the name includes the given titleText
+            const task = allTasks.find(task => task.name.includes(titleText));
+        
+            if (task) {
+                return {
+                    description: task.popupBody,
+                    color: task.color
+                };
             }
         
             // Return null if no matching task is found
             return null;
         }
+
 
         const dropdownParent = $('.dashboardv3-content_main-accordion-layout');
         const popupBtn = $('#ticket-popup-button');
@@ -181,7 +176,7 @@ $(document).ready(function () {
         const companyTicketData = $('#company-ticket-data');
 
         // Use event delegation to handle click event on dynamically added rows
-        $(document).on('click', '.dashboardv3-table_row', function(event) {
+        $(document).on('click', '.dashboardv3-table_row', (event) => {
             // Get the clicked row
             const row = $(this);
         
@@ -219,9 +214,7 @@ $(document).ready(function () {
                 'opacity': '1'
             });
         });
-
         
-
         const setTotalCardCount = () => {
             const openTicketCount = $('#open-ticket-count');
             const awaitingClientFeedbackCount = $('#awaiting-client-feedback-count');
@@ -250,10 +243,11 @@ $(document).ready(function () {
 
             if (statusByKey.length === 0) {
                 ddl.find('.w-dropdown-toggle').css('cursor', 'auto');
-                ddl.clone().insertBefore(ddl).remove();
+                const ddlClone = ddl.cloneNode(true);
+                dropdownParent.insertBefore(ddlClone, ddl);
+                ddl.remove()
                 return;
             }
-
 
             for (const task of statusByKey) {
                 const cloneTr = tr.clone();
