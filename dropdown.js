@@ -145,7 +145,7 @@ $(document).ready(function () {
         console.log("Tasks fetched:", tasks);
 
         const dropdownList = $('.faqs_dropdown.w-dropdown');
-        const statusesByTasks = {
+        const statusList = {
             'awaiting client': [],
             'on going': [],
             'in progress': [],
@@ -153,21 +153,42 @@ $(document).ready(function () {
             qa: [],
         };
 
+        const colorByPrioLvl = {
+            HIGH: '#f6d259',
+            NORMAL: '#8599ff',
+            URGENT: '#e88285',
+            LOW: '#656d7a',
+        };
+
         tasks.forEach(task => {
-            console.log(`Task Name: ${task.name}`);
             const status = task.status.status.toLowerCase();
-            if (statusesByTasks[status]) {
-                statusesByTasks[status].push(task);
+            if (statusList[status]) {
+                statusList[status].push(task);
             }
         });
 
         dropdownList.each(function () {
-            const dropdown = $(this);
-            const titleElem = dropdown.find('.faqs_dropdown_heading-layout');
+            const ddl = $(this);
+            const titleElem = ddl.find('.faqs_dropdown_heading-layout');
             const key = titleElem.text().trim().toLowerCase();
-            const tasksForStatus = statusesByTasks[key] || [];
+            const tasksForStatus = statusList[key] || [];
 
-            dropdown.find('.pending-tickets').text(`${tasksForStatus.length} Tickets`);
+            const tbody = ddl.find('tbody');
+            const trTemplate = ddl.find('tbody tr').first();
+
+            tbody.empty(); // Clear existing rows
+
+            tasksForStatus.forEach(task => {
+                const cloneTr = trTemplate.clone();
+
+                cloneTr.find('.ticket-name').text(task.name);
+                cloneTr.find('.ticket-priority').text(task.priority.priority.toUpperCase());
+                cloneTr.find('.ticket-creation-date').text(new Date(task.date_created).toDateString());
+
+                tbody.append(cloneTr);
+            });
+
+            ddl.find('.pending-tickets').text(`${tasksForStatus.length} Tickets`);
         });
     }
 
