@@ -5,7 +5,6 @@ $(document).ready(function () {
         const intervalId = setInterval(() => {
             const value = sessionStorage.getItem(key);
             if (value) {
-                console.log(`Key "${key}" found in sessionStorage:`, value);
                 clearInterval(intervalId);
                 callback(value);
             }
@@ -68,7 +67,6 @@ $(document).ready(function () {
                     throw new Error("Value is not valid Base64");
                 }
                 const decodedJson = JSON.parse(atob(base64Value));
-                console.log(decodedJson);
 
                 $("#client-name-display").text(decodedJson.name || "No name available");
                 $("#txt-username").text(decodedJson.name || "No name available");
@@ -192,15 +190,8 @@ $(document).ready(function () {
             const titleText = titleElement.text().trim();
 
             // Log the title text to the console
-            console.log('Row Title:', titleText);
 
             const taskDetails = getTaskDetailsByTitle(titleText);
-            if (taskDetails) {
-                console.log('Description:', taskDetails.description);
-                console.log('Color:', taskDetails.color);
-            } else {
-                console.log('Task not found.');
-            }
 
             popupDesc.html(formatTextForHTML(taskDetails.description || 'None'));
             colorTicketData.css('background-color', taskDetails.color);
@@ -281,15 +272,6 @@ $(document).ready(function () {
                 tdData.assignee.text(task.assignees.map((a) => a.username.split(' ')[0]).join(', ') || 'None');
                 tdData.priority.text(task.priority?.priority.toUpperCase() || 'LOW');
                 tdData.flag.attr('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
-
-                /*
-                cloneTr.on('click', function () {
-                    //popupBtn.click();
-                    popupDesc.html(formatTextForHTML(task.popupBody || 'None'));
-                    colorTicketData.css('background-color', task.color);
-                    taskTitleTicket.text(task.name);
-                    companyTicketData.text(uuid);
-                });*/
 
                 tbody.append(cloneTr);
             }
