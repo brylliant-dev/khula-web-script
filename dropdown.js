@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Function to wait for sessionStorage to contain a specific key
-    function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // Extended timeout
+    function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) {
         const startTime = Date.now();
         const intervalId = setInterval(() => {
             const value = sessionStorage.getItem(key);
@@ -87,10 +87,20 @@ $(document).ready(function () {
 
         $('body').append(errorOverlay);
 
-        // Optional: Remove error message after a few seconds
         setTimeout(() => {
             $('#error-overlay').fadeOut(() => $(this).remove());
         }, 5000);
+    }
+
+    // Function to update the dropdowns and handle tasks
+    function runFn({ tasks, uuid }) {
+        console.log('Tasks fetched:', tasks);
+        // Handle the tasks and update the dropdowns here
+        // Example:
+        tasks.forEach(task => {
+            console.log(`Task Name: ${task.name}`);
+            // Update your DOM elements with task details
+        });
     }
 
     // Function to decode and update the DOM
@@ -110,28 +120,9 @@ $(document).ready(function () {
                 const data = decodedJson.data || {};
                 const companyName = data["company-name"] || "No company name available";
                 const currentPlan = data["current-plan"] || "No current plan available";
-                const markupURL = data["markup-link"] || "";
-                const typeOfService = data["type-of-service"] || "No service type available";
-                const uid = data["uid"] || "No UID available";
 
                 $("#txt-company").text(companyName);
-                $("#txt-userid").text(uid);
-
-                const formattedPlan = currentPlan.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-                $('#txtcurrentplan').html(formattedPlan);
-                $('#txtusercurrentplan').html(formattedPlan);
-
-                const markupLinkElement = $("#markupLink");
-                const markupLinkElementQA = $("#markupLinkUser");
-                if (markupLinkElement.length && markupLinkElementQA.length) {
-                    markupLinkElement.attr('href', markupURL);
-                    markupLinkElementQA.attr('href', markupURL);
-                }
-
-                const input = $("#company-input-data");
-                if (input.length) {
-                    input.val(companyName);
-                }
+                $("#txt-userid").text(data.uid || "No UID available");
 
                 resolve(companyName);
             } catch (error) {
