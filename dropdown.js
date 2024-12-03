@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Function to wait for sessionStorage to contain a specific key
-    function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) {
+    function waitForSessionStorage(key, callback, interval = 100, timeout = 10000) { // Extended timeout
         const startTime = Date.now();
         const intervalId = setInterval(() => {
             const value = sessionStorage.getItem(key);
@@ -12,8 +12,6 @@ $(document).ready(function () {
             if (Date.now() - startTime > timeout) {
                 clearInterval(intervalId);
                 console.error(`Timeout waiting for sessionStorage key: ${key}`);
-                showError("Failed to load user information. Please try again later.");
-                hideLoading();
             }
         }, interval);
     }
@@ -60,36 +58,6 @@ $(document).ready(function () {
     // Function to hide loading overlay
     function hideLoading() {
         $('#loading-overlay').remove();
-    }
-
-    // Function to show error message
-    function showError(message) {
-        const errorOverlay = $('<div>', {
-            id: 'error-overlay',
-            text: message,
-            css: {
-                position: 'fixed',
-                top: '0',
-                left: '0',
-                width: '100%',
-                height: '100%',
-                backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                zIndex: '1001',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                fontSize: '20px',
-                color: 'red',
-                fontWeight: 'bold',
-                textAlign: 'center'
-            }
-        });
-
-        $('body').append(errorOverlay);
-
-        setTimeout(() => {
-            $('#error-overlay').fadeOut(() => $(this).remove());
-        }, 5000);
     }
 
     // Function to decode and update the DOM
@@ -140,10 +108,8 @@ $(document).ready(function () {
         });
     }
 
-    // Function to handle tasks and update dropdowns
-    function runFn({ tasks, uuid }) {
-        console.log("Tasks fetched:", tasks);
-
+    // Function to handle tasks and update the dropdowns
+    const runFn = ({ tasks, uuid }) => {
         const dropdownList = $('.faqs_dropdown.w-dropdown');
         const statusList = {
             'awaiting client': [],
@@ -160,42 +126,183 @@ $(document).ready(function () {
             LOW: '#656d7a',
         };
 
-        tasks.forEach(task => {
-            const status = task.status.status.toLowerCase();
-            if (statusList[status]) {
-                statusList[status].push(task);
+        function formatTextForHTML(input) {
+            const urlPattern = /https?:\/\/[^\s]+/g;
+            return input.replace(urlPattern, (url) => `<a href="${url}" style="color: blue; text-decoration: underline;" target="_blank">${url}</a>`)
+                .replace(/\n/g, '<br>')
+                .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+        }
+
+        const statusesByTasks = Object.keys(statusList).reduce((acc, curr) => {
+            const filteredTasks = tasks.filter((task) => task.status.status === curr);
+            acc[curr] = filteredTasks.map((t) => ({
+                name: t.name,
+                status: t.status.status,
+                color: t.status.color,
+                assignees: t.assignees,
+                dateCreated: t.date_created,
+                dueDate: t.due_date,
+                priority: t.priority,
+                popupBody: t.description
+            }));
+            return acc;
+        }, {});
+
+        // Assuming 'statusesByTasks' is already defined
+        function getTaskDetailsByTitle(titleText) {
+            // Loop through each status in statusesByTasks
+            for (const statusKey in statusesByTasks) {
+                if (statusesByTasks.hasOwnProperty(statusKey)) {
+                    // Get the list of tasks under the current status
+                    const tasks = statusesByTasks[statusKey];
+
+                    // Find the task with the given titleText
+                    for (const task of tasks) {
+                        if (task.name === titleText) {
+                            // Return the description and color of the task if found
+                            return {
+                                description: task.popupBody,
+                                color: task.color
+                            };
+                        }
+                    }
+                }
             }
+
+            // Return null if no matching task is found
+            return null;
+        }
+
+        const dropdownParent = $('.dashboardv3-content_main-accordion-layout');
+        const popupBtn = $('#ticket-popup-button');
+        const popupDesc = $('#description-text-data');
+        const colorTicketData = $('#color-ticket-data');
+        const taskTitleTicket = $('#task-title-ticket-data');
+        const companyTicketData = $('#company-ticket-data');
+
+        // Use event delegation to handle click event on dynamically added rows
+        $(document).on('click', '.dashboardv3-table_row', function(event) {
+            // Get the clicked row
+            const row = $(this);
+
+            // Find the element with class 'dashboard-table_cell title' inside the clicked row
+            const titleElement = row.find('.dashboard-table_cell.title');
+
+            // Get the text content of the title element
+            const titleText = titleElement.text().trim();
+
+            // Log the title text to the console
+            console.log('Row Title:', titleText);
+
+            const taskDetails = getTaskDetailsByTitle(titleText);
+            if (taskDetails) {
+                console.log('Description:', taskDetails.description);
+                console.log('Color:', taskDetails.color);
+            } else {
+                console.log('Task not found.');
+            }
+
+            popupDesc.html(formatTextForHTML(taskDetails.description || 'None'));
+            colorTicketData.css('background-color', taskDetails.color);
+            taskTitleTicket.text(titleText);
+            companyTicketData.text($("#txt-company").text());
+
+
+            // Display the pop-up with class 'pop-out-ticket' as flex and set opacity to 1
+            $('.pop-out-ticket').css({
+                'display': 'flex',
+                'opacity': '1'
+            });
+
+            // Set the opacity of the element with class 'pop-out-wrapper-ticket' to 1
+            $('.pop-out-wrapper-ticket').css({
+                'opacity': '1',
+                'transform': 'translateY(0em)'
+            });
         });
+
+        const setTotalCardCount = () => {
+            const openTicketCount = $('#open-ticket-count');
+            const awaitingClientFeedbackCount = $('#awaiting-client-feedback-count');
+            const openCount = ['on going', 'incoming', 'in progress', 'qa'].reduce((acc, curr) => acc + statusesByTasks[curr].length, 0);
+
+            openTicketCount.text(openCount);
+            awaitingClientFeedbackCount.text(statusesByTasks['awaiting client'].length);
+        };
 
         dropdownList.each(function () {
             const ddl = $(this);
             const titleElem = ddl.find('.faqs_dropdown_heading-layout');
             const key = titleElem.text().trim().toLowerCase();
-            const tasksForStatus = statusList[key] || [];
+            const statusByKey = statusesByTasks[key];
 
+            const ticketCountElem = ddl.find('.pending-tickets');
             const tbody = ddl.find('tbody');
-            const trTemplate = ddl.find('tbody tr').first();
+            const tr = tbody.find('tr').first();
 
-            tbody.empty(); // Clear existing rows
+            if (!statusByKey) {
+                tr.remove();
+                return;
+            }
 
-            tasksForStatus.forEach(task => {
-                const cloneTr = trTemplate.clone();
+            ticketCountElem.text(`${statusByKey.length} Tickets`);
 
-                cloneTr.find('.ticket-name').text(task.name);
-                cloneTr.find('.ticket-priority').text(task.priority.priority.toUpperCase());
-                cloneTr.find('.ticket-creation-date').text(new Date(task.date_created).toDateString());
+            if (statusByKey.length === 0) {
+                ddl.find('.w-dropdown-toggle').css('cursor', 'auto');
+
+
+                return;
+            }
+
+            for (const task of statusByKey) {
+                const cloneTr = tr.clone();
+                const td = cloneTr.find('td');
+
+                const getDateDigit = (date) => {
+                    if (!date) return 'None';
+                    const parsedUnixDate = parseInt(date);
+                    if (isNaN(parsedUnixDate)) return 'None';
+                    const newDate = new Date(parsedUnixDate).toString().split(' ');
+                    return `${newDate[1]} ${newDate[2]}`;
+                };
+
+                const tdData = {
+                    ticket: td.eq(0),
+                    dateCreated: td.eq(1),
+                    dueDate: td.eq(2),
+                    assignee: td.eq(3).find('.dashboard-table_cell-label'),
+                    priority: td.eq(4).find('.dashboard-table_cell-label'),
+                    flag: td.eq(4).find('.dashboard-table_cell-icon > svg > path'),
+                };
+
+                tdData.ticket.text(task.name);
+                tdData.dateCreated.text(getDateDigit(task.dateCreated));
+                tdData.dueDate.text(getDateDigit(task.dueDate));
+                tdData.assignee.text(task.assignees.map((a) => a.username.split(' ')[0]).join(', ') || 'None');
+                tdData.priority.text(task.priority?.priority.toUpperCase() || 'LOW');
+                tdData.flag.attr('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
+
+                /*
+                cloneTr.on('click', function () {
+                    //popupBtn.click();
+                    popupDesc.html(formatTextForHTML(task.popupBody || 'None'));
+                    colorTicketData.css('background-color', task.color);
+                    taskTitleTicket.text(task.name);
+                    companyTicketData.text(uuid);
+                });*/
 
                 tbody.append(cloneTr);
-            });
-
-            ddl.find('.pending-tickets').text(`${tasksForStatus.length} Tickets`);
+            }
+            tr.remove();
         });
-    }
+
+        setTotalCardCount();
+    };
 
     // Main function to fetch data and update elements dynamically
     const mainFn = async (base64Value) => {
         try {
-            showLoading(); // Ensure loading is shown
+            showLoading();
             const uuid = await updateDOM(base64Value);
 
             if (!uuid) throw new Error('Company name not found');
@@ -210,17 +317,13 @@ $(document).ready(function () {
             if (!response.ok) throw new Error(`API call failed: ${response.status}`);
             const tasks = await response.json();
 
-            runFn({ tasks, uuid }); // Call runFn to process tasks
+            runFn({ tasks, uuid });
         } catch (error) {
             console.error('Error in mainFn:', error);
-            showError("Failed to load user information. Please try again later.");
         } finally {
-            hideLoading(); // Always hide loading animation
+            hideLoading();
         }
     };
-
-    // Start loading immediately
-    showLoading();
 
     waitForSessionStorage("wfuUser", (value) => {
         mainFn(value);
