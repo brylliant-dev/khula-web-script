@@ -315,14 +315,17 @@ $(document).ready(function () {
             const response = await fetch(url);
 
             if (!response.ok) throw new Error(`API call failed: ${response.status}`);
-            const tasks = await response.json();
+           await response.json()
+                 .then((res) => {
+                      hideLoading();
+                      runFn({ tasks: res, uuid });
+                 })
 
-            runFn({ tasks, uuid });
+            
         } catch (error) {
             console.error('Error in mainFn:', error);
-        } finally {
             hideLoading();
-        }
+        } 
     };
 
     waitForSessionStorage("wfuUser", (value) => {
