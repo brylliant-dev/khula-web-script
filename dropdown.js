@@ -243,9 +243,7 @@ $(document).ready(function () {
 
             if (statusByKey.length === 0) {
                 ddl.find('.w-dropdown-toggle').css('cursor', 'auto');
-                const ddlClone = ddl.cloneNode(true);
-                dropdownParent.insertBefore(ddlClone, ddl);
-                ddl.remove()
+                ddl.clone().insertBefore(ddl).remove();
                 return;
             }
 
