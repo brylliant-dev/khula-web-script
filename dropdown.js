@@ -83,12 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const markupURL = data["markup-link"] || "";
                 const typeOfService = data["type-of-service"] || "No service type available";
                 const uid = data["uid"] || "No UID available";
-                const websiteUrl = data["website-url"] || "No website URL available";
+                //const websiteUrl = data["website-url"] || "No website URL available";
 
                 // Update DOM elements with extracted data
                 document.getElementById("txt-company").innerText = companyName;
                 document.getElementById("txt-userid").innerText = uid;
-                document.getElementById("txt-website").innerText = websiteUrl;
+                //document.getElementById("txt-website").innerText = websiteUrl;
 
                 // Format and display the current plan
                 const formattedPlan = currentPlan.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
