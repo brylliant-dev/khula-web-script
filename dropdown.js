@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error("Value is not valid Base64");
                 }
                 const decodedJson = JSON.parse(atob(base64Value));
-
+                console.log(decodedJson); 
                 // Update the DOM with basic user information
                 document.getElementById("client-name-display").innerText = decodedJson.name || "No name available";
                 document.getElementById("txt-username").innerText = decodedJson.name || "No name available";
