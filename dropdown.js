@@ -96,8 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Update the markup link if available
                 const markupLinkElement = document.getElementById("markupLink");
-                if (markupLinkElement) {
+                 const markupLinkElementQA = document.getElementById("markupLinkQA");
+                if (markupLinkElement && markupLinkElementQA) {
                     markupLinkElement.href = markupURL;
+                    markupLinkElementQA.href = markupURL;
                 }
 
                 // Update input fields if they exist
