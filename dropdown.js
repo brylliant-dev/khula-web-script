@@ -92,17 +92,6 @@ $(document).ready(function () {
         }, 5000);
     }
 
-    // Function to update the dropdowns and handle tasks
-    function runFn({ tasks, uuid }) {
-        console.log('Tasks fetched:', tasks);
-        // Handle the tasks and update the dropdowns here
-        // Example:
-        tasks.forEach(task => {
-            console.log(`Task Name: ${task.name}`);
-            // Update your DOM elements with task details
-        });
-    }
-
     // Function to decode and update the DOM
     function updateDOM(base64Value) {
         return new Promise((resolve, reject) => {
@@ -120,9 +109,28 @@ $(document).ready(function () {
                 const data = decodedJson.data || {};
                 const companyName = data["company-name"] || "No company name available";
                 const currentPlan = data["current-plan"] || "No current plan available";
+                const markupURL = data["markup-link"] || "";
+                const typeOfService = data["type-of-service"] || "No service type available";
+                const uid = data["uid"] || "No UID available";
 
                 $("#txt-company").text(companyName);
-                $("#txt-userid").text(data.uid || "No UID available");
+                $("#txt-userid").text(uid);
+
+                const formattedPlan = currentPlan.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+                $('#txtcurrentplan').html(formattedPlan);
+                $('#txtusercurrentplan').html(formattedPlan);
+
+                const markupLinkElement = $("#markupLink");
+                const markupLinkElementQA = $("#markupLinkUser");
+                if (markupLinkElement.length && markupLinkElementQA.length) {
+                    markupLinkElement.attr('href', markupURL);
+                    markupLinkElementQA.attr('href', markupURL);
+                }
+
+                const input = $("#company-input-data");
+                if (input.length) {
+                    input.val(companyName);
+                }
 
                 resolve(companyName);
             } catch (error) {
@@ -132,10 +140,41 @@ $(document).ready(function () {
         });
     }
 
+    // Function to handle tasks and update dropdowns
+    function runFn({ tasks, uuid }) {
+        console.log("Tasks fetched:", tasks);
+
+        const dropdownList = $('.faqs_dropdown.w-dropdown');
+        const statusesByTasks = {
+            'awaiting client': [],
+            'on going': [],
+            'in progress': [],
+            incoming: [],
+            qa: [],
+        };
+
+        tasks.forEach(task => {
+            console.log(`Task Name: ${task.name}`);
+            const status = task.status.status.toLowerCase();
+            if (statusesByTasks[status]) {
+                statusesByTasks[status].push(task);
+            }
+        });
+
+        dropdownList.each(function () {
+            const dropdown = $(this);
+            const titleElem = dropdown.find('.faqs_dropdown_heading-layout');
+            const key = titleElem.text().trim().toLowerCase();
+            const tasksForStatus = statusesByTasks[key] || [];
+
+            dropdown.find('.pending-tickets').text(`${tasksForStatus.length} Tickets`);
+        });
+    }
+
     // Main function to fetch data and update elements dynamically
     const mainFn = async (base64Value) => {
         try {
-            showLoading();
+            showLoading(); // Ensure loading is shown
             const uuid = await updateDOM(base64Value);
 
             if (!uuid) throw new Error('Company name not found');
@@ -150,12 +189,12 @@ $(document).ready(function () {
             if (!response.ok) throw new Error(`API call failed: ${response.status}`);
             const tasks = await response.json();
 
-            runFn({ tasks, uuid });
+            runFn({ tasks, uuid }); // Call runFn to process tasks
         } catch (error) {
             console.error('Error in mainFn:', error);
             showError("Failed to load user information. Please try again later.");
         } finally {
-            hideLoading();
+            hideLoading(); // Always hide loading animation
         }
     };
 
