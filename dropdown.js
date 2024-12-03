@@ -250,7 +250,7 @@ $(document).ready(function () {
                 ddl.find('.w-dropdown-toggle').css('cursor', 'auto');
                 const ddlClone = ddl[0].cloneNode(true);
                 dropdownParent.insertBefore(ddlClone, ddl[0]);
-                ddl[0].remove();
+                
                 return;
             }
 
