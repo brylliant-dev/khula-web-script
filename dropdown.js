@@ -89,7 +89,7 @@ $(document).ready(function () {
                 $('#txtusercurrentplan').html(formattedPlan);
 
                 const markupLinkElement = $("#markupLink");
-                const markupLinkElementQA = $("#markupLinkQA");
+                const markupLinkElementQA = $("#markupLinkUser");
                 if (markupLinkElement.length && markupLinkElementQA.length) {
                     markupLinkElement.attr('href', markupURL);
                     markupLinkElementQA.attr('href', markupURL);
