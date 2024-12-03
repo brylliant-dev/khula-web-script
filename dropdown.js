@@ -187,6 +187,22 @@ $(document).ready(function () {
                 return;
             }
 
+            // Add a click event listener to all rows with the class 'dashboardv3-table_row'
+            $('.dashboardv3-table_row').on('click', function(event) {
+                // Get the clicked row
+                const row = $(this);
+            
+                // Find the element with class 'dashboard-table_cell title' inside the clicked row
+                const titleElement = row.find('.dashboard-table_cell.title');
+            
+                // Get the text content of the title element
+                const titleText = titleElement.text().trim();
+            
+                // Log the title text to the console
+                console.log('Row Title:', titleText);
+            });
+
+
             for (const task of statusByKey) {
                 const cloneTr = tr.clone();
                 const td = cloneTr.find('td');
