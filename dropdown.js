@@ -245,7 +245,7 @@ $(document).ready(function () {
                 tdData.flag.attr('fill', colorByPrioLvl[task.priority?.priority.toUpperCase() || 'LOW']);
 
                 cloneTr.on('click', function () {
-                    popupBtn.click();
+                    //popupBtn.click();
                     popupDesc.html(formatTextForHTML(task.popupBody || 'None'));
                     colorTicketData.css('background-color', task.color);
                     taskTitleTicket.text(task.name);
