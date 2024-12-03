@@ -76,7 +76,7 @@ $(document).ready(function () {
                 const companyName = data["company-name"] || "No company name available";
                 const currentPlan = data["current-plan"] || "No current plan available";
                 const markupURL = data["markup-link"] || "";
-                const typeOfService = data["type-of-service"] || "No service type available";
+                // const typeOfService = data["type-of-service"] || "No service type available";
                 const uid = data["uid"] || "No UID available";
 
                 $("#txt-company").text(companyName);
@@ -171,8 +171,6 @@ $(document).ready(function () {
             return null;
         }
 
-        const dropdownParent = $('.dashboardv3-content_main-accordion-layout');
-        const popupBtn = $('#ticket-popup-button');
         const popupDesc = $('#description-text-data');
         const colorTicketData = $('#color-ticket-data');
         const taskTitleTicket = $('#task-title-ticket-data');
