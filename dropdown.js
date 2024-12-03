@@ -200,7 +200,19 @@ $(document).ready(function () {
             
                 // Log the title text to the console
                 console.log('Row Title:', titleText);
+            
+                // Display the pop-up with class 'pop-out-ticket' and set opacity to 1
+                $('.pop-out-ticket').css({
+                    'display': 'flex',
+                    'opacity': '1'
+                });
+            
+                // Set the opacity of the element with class 'pop-out-wrapper-ticket' to 1
+                $('.pop-out-wrapper-ticket').css({
+                    'opacity': '1'
+                });
             });
+
 
 
             for (const task of statusByKey) {
