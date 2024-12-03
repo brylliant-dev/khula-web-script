@@ -134,7 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         function formatTextForHTML(input) {
-            return input
+              const urlPattern = /https?:\/\/[^\s]+/g;
+            
+              // Replace detected URLs with clickable links
+              const formattedString = input.replace(urlPattern, (url) => {
+                return `<a href="${url}" target="_blank">${url}</a>`;
+              });
+
+            return formattedString
                 .replace(/\n/g, '<br>') // Replace newlines with <br>
                 .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;'); // Replace tabs with 4 spaces
         }
