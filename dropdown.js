@@ -93,6 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Format and display the current plan
                 const formattedPlan = currentPlan.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
                 document.getElementById('txtcurrentplan').innerHTML = formattedPlan;
+                document.getElementById('txtusercurrentplan').innerHTML = formattedPlan;
+                
 
                 // Update the markup link if available
                 const markupLinkElement = document.getElementById("markupLink");
