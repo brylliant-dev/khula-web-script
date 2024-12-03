@@ -187,8 +187,8 @@ $(document).ready(function () {
                 return;
             }
 
-            // Add a click event listener to all rows with the class 'dashboardv3-table_row'
-            $('.dashboardv3-table_row').on('click', function(event) {
+            // Use event delegation to handle click event on dynamically added rows
+            $(document).on('click', '.dashboardv3-table_row', function(event) {
                 // Get the clicked row
                 const row = $(this);
             
@@ -201,7 +201,7 @@ $(document).ready(function () {
                 // Log the title text to the console
                 console.log('Row Title:', titleText);
             
-                // Display the pop-up with class 'pop-out-ticket' and set opacity to 1
+                // Display the pop-up with class 'pop-out-ticket' as flex and set opacity to 1
                 $('.pop-out-ticket').css({
                     'display': 'flex',
                     'opacity': '1'
@@ -212,6 +212,7 @@ $(document).ready(function () {
                     'opacity': '1'
                 });
             });
+
 
 
 
