@@ -1,3 +1,4 @@
+
   var Webflow = Webflow || [];
   Webflow.push(function () {
     // Swiper Library for Card Slider
@@ -260,28 +261,3 @@ window.addEventListener('resize', function () {
       runSplit();
     }, 2000);
   });
-</script>
-
-<script>
-/*
-  document.addEventListener('DOMContentLoaded', function () {
-    const lightboxLink = document.querySelector('.lightbox-link');
-
-    if (lightboxLink) {
-      lightboxLink.addEventListener('click', function () {
-        const iframe = document.querySelector('iframe.embedly-embed');
-        console.log('vimeo here')
-        if (iframe) {
-          let src = iframe.src;
-          
-          // Check if the autoplay parameter already exists
-          if (!src.includes('autoplay=1')) {
-            // Append autoplay=1 to the URL for Vimeo video
-            src += (src.includes('?') ? '&' : '?') + 'autoplay=1&muted=1';
-            iframe.src = src;
-          }
-        }
-      });
-    }
-  });
-  */
