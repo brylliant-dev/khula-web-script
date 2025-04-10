@@ -2,7 +2,7 @@
 
 A client-facing dashboard application that provides real-time visibility into development tasks and tickets. This dashboard integrates with ClickUp through Xano API, allowing Khula's clients to track their development requests and monitor task progress.
 
-![alt text](image.png)
+![image](https://github.com/user-attachments/assets/e7c12721-4748-40b6-a642-074eb99175b1)
 
 ## Features
 
